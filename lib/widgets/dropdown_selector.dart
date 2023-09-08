@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ui_kit/src/utils/colors.dart';
-import 'package:flutter_ui_kit/widgets/loader/loader.dart';
-import 'package:flutter_ui_kit/widgets/flutter_search_bar.dart';
+import 'package:uikit_flutter/src/utils/colors.dart';
+import 'package:uikit_flutter/widgets/loader/loader.dart';
+import 'package:uikit_flutter/widgets/flutter_search_bar.dart';
 
 /// A widget that behaves like a dropdown menu, allowing
 /// only view-mode, single and multi-selection and much more.
