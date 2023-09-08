@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_ui_kit/src/utils/colors.dart';
+import 'package:uikit_flutter/src/utils/colors.dart';
 
 /// This class manages dark and light theme data.
 class Themes {

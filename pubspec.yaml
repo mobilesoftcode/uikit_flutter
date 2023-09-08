@@ -1,8 +1,8 @@
-name: flutter_ui_kit
+name: uikit_flutter
 description: Themes manager, loader manager and advanced widgets for Flutter projects.
 version: 0.0.1
-homepage: "https://github.com/mobilesoftcode/flutter_ui_kit"
-issue_tracker: "https://github.com/mobilesoftcode/flutter_ui_kit"
+homepage: "https://github.com/mobilesoftcode/uikit_flutter"
+issue_tracker: "https://github.com/mobilesoftcode/uikit_flutter"
 
 environment:
   sdk: ">=3.0.0 <4.0.0"

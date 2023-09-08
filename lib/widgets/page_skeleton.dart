@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter_ui_kit/src/utils/constants.dart';
+import 'package:uikit_flutter/src/utils/constants.dart';
 
 /// Default skeleton page, with SafeArea, scrollbar and padding.
 class PageSkeleton extends StatelessWidget {
