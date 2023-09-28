@@ -68,7 +68,9 @@ class LoaderHelper {
   /// Show a spinner in a dialog on top of all the app content.
   /// The loader is shown only if there are no other active loaders.
   show({bool scheduler = false}) {
-    if (_loadingDialog == null && _context != null) {
+    if (_loadingDialog == null &&
+        _context != null &&
+        (_context?.mounted ?? false)) {
       _loadingDialog = LoadingDialog(loaderWidget: _loaderWidget);
       _loadingDialog?.show(_context!,
           scheduler: scheduler, barrierColor: _loaderBarrierColor);
@@ -78,8 +80,8 @@ class LoaderHelper {
   /// Hide the spinner loader, if shown.
   hide({bool scheduler = false}) {
     if (_loadingDialog != null) {
-      _loadingDialog?.hide(scheduler: scheduler);
       _loadingDialog = null;
+      _loadingDialog?.hide(scheduler: scheduler);
     }
   }
 }

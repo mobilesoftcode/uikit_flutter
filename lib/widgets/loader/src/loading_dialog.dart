@@ -18,18 +18,21 @@ class LoadingDialog {
   BuildContext? _context;
 
   /// The custom loading widget
-  late Dialog loading = Dialog(
-      backgroundColor: Colors.transparent,
-      child: loaderWidget ??
-          Image.asset('assets/double_ring_loading_io.gif',
-              package: "uikit_flutter",
-              height: 70,
-              width: 70,
-              color: Colors.white));
+  late Widget loading = WillPopScope(
+    onWillPop: () async => false,
+    child: Dialog(
+        backgroundColor: Colors.transparent,
+        child: loaderWidget ??
+            Image.asset('assets/double_ring_loading_io.gif',
+                package: "flutter_ui_kit",
+                height: 70,
+                width: 70,
+                color: Colors.white)),
+  );
 
   /// Hide this loader.
   void hide({bool scheduler = false}) {
-    if (_context != null) {
+    if (_context != null && (_context?.mounted ?? false)) {
       if (scheduler) {
         SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
           Navigator.pop(_context!);

@@ -16,6 +16,8 @@ Furthermore, the following widgets are also provided:
 * **ShadowBox**
 * **ShadowBoxWithTitle**
 * **SearchBar**
+* **Accordion**
+* **ExpandableText**
 * **PageSkeleton**
 
 ## Usage
@@ -167,8 +169,28 @@ DropdownSelector<int>(
 )
 ```
 
+### Accordion
+Accordion widget with title and a `Widget` to be shown when expanded. The accordion is collapsed by default.
+```dart
+Accordion(
+    title: "Tap to expand",
+    child: Text("Hello world"),
+);
+```
+
+### ExpandableText
+Multiline text that can be eventually expanded with a button to show more lines.
+```dart
+ExpandableText(
+    textSpan: TextSpan(
+        text:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."),
+    maxLines: 1,
+);
+```
+
 ### Widgets
-To have more info about custom widgets and their behaviour, check the following classes in code:  `Loader`, `PageSkeleton`.
+To have more info about custom widgets and their behaviour, check the following classes in code: `Loader`, `PageSkeleton`.
 
 
 ## Additional information
