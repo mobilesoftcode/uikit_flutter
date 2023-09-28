@@ -2,12 +2,25 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+/// Multiline text that can be eventually expanded with a button to show more lines
 class ExpandableText extends StatefulWidget {
+  /// The text to truncate depending on `maxLines` to show
   final TextSpan textSpan;
+
+  /// The text to show at the end of the truncated `textSpan` to eventually manage
+  /// the expand logic. Defaults to `Show more`
   final Text seeMore;
+
+  /// The text to show at the end of the truncated `textSpan` to eventually manage
+  /// the collapse logic. Defaults to `Show less`
   final Text seeLess;
+
+  /// The number of lines to show initially to truncate the text
   final int maxLines;
 
+  /// Multiline text that can be eventually expanded with a button to show more lines.
+  ///
+  /// Defines the max number of lines to show and the text to truncate.
   const ExpandableText({
     super.key,
     required this.textSpan,
@@ -49,7 +62,7 @@ class _ExpandableTextState extends State<ExpandableText> {
       child: LayoutBuilder(
         builder: (context, constraints) {
           final maxLines = widget.maxLines;
-    
+
           final richText = Text.rich(
             widget.textSpan,
             style: widget.textSpan.style,
@@ -59,7 +72,7 @@ class _ExpandableTextState extends State<ExpandableText> {
               constraints.copyWith(
                   minWidth: constraints.minWidth,
                   maxWidth: constraints.maxWidth));
-    
+
           if (boxes.length <= maxLines || _isExpanded) {
             List<TextSpan> children = [widget.textSpan];
             if (_isExpanded) {
@@ -73,7 +86,7 @@ class _ExpandableTextState extends State<ExpandableText> {
             final croppedText = _ellipsizeText(boxes);
             final ellipsizedText =
                 _buildEllipsizedText(croppedText, _tapRecognizer);
-    
+
             if (ellipsizedText.measure(context, constraints).length <=
                 maxLines) {
               return ellipsizedText;

@@ -32,7 +32,7 @@ class LoadingDialog {
 
   /// Hide this loader.
   void hide({bool scheduler = false}) {
-    if (_context != null) {
+    if (_context != null && (_context?.mounted ?? false)) {
       if (scheduler) {
         SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
           Navigator.pop(_context!);
