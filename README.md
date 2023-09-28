@@ -178,6 +178,17 @@ Accordion(
 );
 ```
 
+### ExpandableText
+Multiline text that can be eventually expanded with a button to show more lines.
+```dart
+ExpandableText(
+    textSpan: TextSpan(
+        text:
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."),
+    maxLines: 1,
+);
+```
+
 ### Widgets
 To have more info about custom widgets and their behaviour, check the following classes in code: `Loader`, `PageSkeleton`.
 

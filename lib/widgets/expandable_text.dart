@@ -8,22 +8,33 @@ class ExpandableText extends StatefulWidget {
   final TextSpan textSpan;
 
   /// The text to show at the end of the truncated `textSpan` to eventually manage
-  /// the expandble/collapsable logic (not handled in this widget)
-  final TextSpan moreSpan;
+  /// the expand logic. Defaults to `Show more`
+  final Text seeMore;
+
+  /// The text to show at the end of the truncated `textSpan` to eventually manage
+  /// the collapse logic. Defaults to `Show less`
+  final Text seeLess;
 
   /// The number of lines to show initially to truncate the text
   final int maxLines;
 
   /// Multiline text that can be eventually expanded with a button to show more lines.
   ///
-  /// Defines the max number of lines to show and the text to truncate as well a [TextSpan] to expand.
-  /// Note that logic to change maxLines number is not handled by this widget
-  /// (i.e. use a `setState` to change the `maxLines` value)
+  /// Defines the max number of lines to show and the text to truncate.
   const ExpandableText({
     super.key,
     required this.textSpan,
     required this.maxLines,
-    required this.moreSpan,
+    this.seeMore = const Text(
+      "Show more",
+      style: TextStyle(
+          fontWeight: FontWeight.bold, decoration: TextDecoration.underline),
+    ),
+    this.seeLess = const Text(
+      "Show less",
+      style: TextStyle(
+          fontWeight: FontWeight.bold, decoration: TextDecoration.underline),
+    ),
   });
 
   @override
@@ -33,7 +44,7 @@ class ExpandableText extends StatefulWidget {
 class _ExpandableTextState extends State<ExpandableText> {
   static const String _ellipsis = "\u2026\u0020";
 
-  String get _lineEnding => "$_ellipsis${widget.moreSpan.text}";
+  String get _lineEnding => "$_ellipsis${widget.seeMore.data}";
 
   bool _isExpanded = false;
 
@@ -45,7 +56,10 @@ class _ExpandableTextState extends State<ExpandableText> {
     };
 
   @override
-  Widget build(BuildContext context) => LayoutBuilder(
+  Widget build(BuildContext context) {
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 100),
+      child: LayoutBuilder(
         builder: (context, constraints) {
           final maxLines = widget.maxLines;
 
@@ -53,11 +67,21 @@ class _ExpandableTextState extends State<ExpandableText> {
             widget.textSpan,
             style: widget.textSpan.style,
           ).build(context) as RichText;
-          final boxes = richText.measure(context,
-              constraints.copyWith(maxWidth: constraints.maxWidth - 30));
+          final boxes = richText.measure(
+              context,
+              constraints.copyWith(
+                  minWidth: constraints.minWidth,
+                  maxWidth: constraints.maxWidth));
 
           if (boxes.length <= maxLines || _isExpanded) {
-            return RichText(text: widget.textSpan);
+            List<TextSpan> children = [widget.textSpan];
+            if (_isExpanded) {
+              children.add(TextSpan(
+                  text: widget.seeLess.data,
+                  style: widget.seeLess.style,
+                  recognizer: _tapRecognizer));
+            }
+            return RichText(text: TextSpan(children: children));
           } else {
             final croppedText = _ellipsizeText(boxes);
             final ellipsizedText =
@@ -68,12 +92,14 @@ class _ExpandableTextState extends State<ExpandableText> {
               return ellipsizedText;
             } else {
               final fixedEllipsizedText = croppedText.substring(
-                  0, croppedText.length - _lineEnding.length);
+                  0, (croppedText.length - _lineEnding.length).abs());
               return _buildEllipsizedText(fixedEllipsizedText, _tapRecognizer);
             }
           }
         },
-      );
+      ),
+    );
+  }
 
   String _ellipsizeText(List<TextBox> boxes) {
     var text = widget.textSpan.text ?? "";
@@ -98,7 +124,12 @@ class _ExpandableTextState extends State<ExpandableText> {
         text: TextSpan(
           text: "$text$_ellipsis",
           style: widget.textSpan.style,
-          children: [widget.moreSpan],
+          children: [
+            TextSpan(
+                text: widget.seeMore.data,
+                style: widget.seeMore.style,
+                recognizer: tapRecognizer)
+          ],
         ),
       );
 }
