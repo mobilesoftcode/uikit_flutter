@@ -1,16 +1,8 @@
 import 'package:flutter/material.dart';
 
-/// Accordion widget with title and a [Widget] to be shown when expanded
 class Accordion extends StatefulWidget {
-  /// The text to show when the accordion is collapsed. It is visible also when
-  /// the accordion is expanded.
   final String title;
-
-  /// The [Widget] to show when the accordion is expanded.
   final Widget child;
-
-  /// Accordion widget with title and a [Widget] to be shown when expanded.
-  /// The accordion is collapsed by default.
   const Accordion({
     super.key,
     required this.title,
