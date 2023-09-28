@@ -2,11 +2,23 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+/// Multiline text that can be eventually expanded with a button to show more lines
 class ExpandableText extends StatefulWidget {
+  /// The text to truncate depending on `maxLines` to show
   final TextSpan textSpan;
+
+  /// The text to show at the end of the truncated `textSpan` to eventually manage
+  /// the expandble/collapsable logic (not handled in this widget)
   final TextSpan moreSpan;
+
+  /// The number of lines to show initially to truncate the text
   final int maxLines;
 
+  /// Multiline text that can be eventually expanded with a button to show more lines.
+  ///
+  /// Defines the max number of lines to show and the text to truncate as well a [TextSpan] to expand.
+  /// Note that logic to change maxLines number is not handled by this widget
+  /// (i.e. use a `setState` to change the `maxLines` value)
   const ExpandableText({
     super.key,
     required this.textSpan,
