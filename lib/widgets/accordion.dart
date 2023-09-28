@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'expandable_text.dart';
+
 /// Accordion widget with title and a [Widget] to be shown when expanded
 class Accordion extends StatefulWidget {
   /// The text to show when the accordion is collapsed. It is visible also when
@@ -8,7 +10,7 @@ class Accordion extends StatefulWidget {
 
   /// The [Widget] to show when the accordion is expanded.
   final Widget child;
-  
+
   /// Accordion widget with title and a [Widget] to be shown when expanded.
   /// The accordion is collapsed by default.
   const Accordion({
