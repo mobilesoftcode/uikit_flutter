@@ -1,3 +1,6 @@
+## 0.0.2+1
+Fixed wrong default loader asset path
+
 ## 0.0.2
 * Added ExpandableText widget
 * Added Accordion widget
