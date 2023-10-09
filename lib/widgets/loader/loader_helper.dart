@@ -80,8 +80,8 @@ class LoaderHelper {
   /// Hide the spinner loader, if shown.
   hide({bool scheduler = false}) {
     if (_loadingDialog != null) {
-      _loadingDialog = null;
       _loadingDialog?.hide(scheduler: scheduler);
+      _loadingDialog = null;
     }
   }
 }
