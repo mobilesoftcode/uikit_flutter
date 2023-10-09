@@ -1,3 +1,6 @@
+## 0.0.2+2
+Fixed loader not hiding
+
 ## 0.0.2+1
 Fixed wrong default loader asset path
 
