@@ -73,7 +73,8 @@ class LoaderHelper {
         (_context?.mounted ?? false)) {
       _loadingDialog = LoadingDialog(loaderWidget: _loaderWidget);
       _loadingDialog?.show(_context!,
-          scheduler: scheduler, barrierColor: _loaderBarrierColor);
+          scheduler: scheduler,
+          barrierColor: _loaderBarrierColor ?? Colors.black54);
     }
   }
 
