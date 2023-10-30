@@ -22,12 +22,16 @@ class LoadingDialog {
     onWillPop: () async => false,
     child: Dialog(
         backgroundColor: Colors.transparent,
-        child: loaderWidget ??
-            Image.asset('assets/double_ring_loading_io.gif',
-                package: "uikit_flutter",
-                height: 70,
-                width: 70,
-                color: Colors.white)),
+        shadowColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        child: Builder(builder: (context) {
+          return loaderWidget ??
+              Image.asset('assets/loader.gif',
+                  package: "uikit_flutter",
+                  height: 70,
+                  width: 70,
+                  color: Theme.of(context).primaryColor);
+        })),
   );
 
   /// Hide this loader.
@@ -45,7 +49,7 @@ class LoadingDialog {
 
   /// Show this loader on top of widget tree. It avoids any user interaction.
   void show(BuildContext context,
-      {bool scheduler = false, Color? barrierColor}) {
+      {bool scheduler = false, required Color barrierColor}) {
     _context = context;
     if (scheduler) {
       SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
