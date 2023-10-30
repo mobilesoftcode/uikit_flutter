@@ -165,7 +165,6 @@ class DropdownSelector<T> extends StatelessWidget {
                                                     ? Theme.of(context)
                                                         .primaryColor
                                                     : ColorsPalette.primaryGrey,
-                                 
                                                 size: 15,
                                               )
                                             : null,
@@ -178,8 +177,7 @@ class DropdownSelector<T> extends StatelessWidget {
                                                 icon: const Icon(
                                                   Icons.more_vert,
                                                   color:
-                                                      ColorsPalette
-                                                      .primaryGrey,
+                                                      ColorsPalette.primaryGrey,
                                                 ),
                                               )
                                             : null,

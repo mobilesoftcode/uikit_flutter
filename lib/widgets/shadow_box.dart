@@ -189,8 +189,6 @@ class _ShadowBoxWithTitleState extends State<ShadowBoxWithTitle>
                                 turns: Tween(begin: 0.0, end: 1.0)
                                     .animate(_rotationController),
                                 child: const Icon(Icons.keyboard_arrow_down),
-                                
-                                
                               ),
                             )
                           : Container(),
