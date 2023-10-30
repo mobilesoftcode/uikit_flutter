@@ -8,7 +8,7 @@ class Loader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-        child: Image.asset('assets/double_ring_loading_io.gif',
+        child: Image.asset('assets/loader.gif',
             package: "uikit_flutter",
             height: 70,
             width: 70,
