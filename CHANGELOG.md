@@ -1,3 +1,7 @@
+## 0.0.2+3
+* Changed loader asset
+* Added barrier color to loader dialog
+
 ## 0.0.2+2
 Fixed loader not hiding
 
