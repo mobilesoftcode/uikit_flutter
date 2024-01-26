@@ -1,5 +1,7 @@
 // Widgetbook file: widgetbook.dart
 import 'package:flutter/material.dart';
+import 'package:widgetbook/widgetbook.dart';
+
 import 'package:uikit_flutter/theme/src/themes.dart';
 import 'package:uikit_flutter/widgets/accordion.dart';
 import 'package:uikit_flutter/widgets/dropdown_selector.dart';
@@ -8,7 +10,24 @@ import 'package:uikit_flutter/widgets/flutter_search_bar.dart';
 import 'package:uikit_flutter/widgets/loader/loader.dart';
 import 'package:uikit_flutter/widgets/page_skeleton.dart';
 import 'package:uikit_flutter/widgets/shadow_box.dart';
-import 'package:widgetbook/widgetbook.dart';
+import 'package:uikit_flutter/widgets/dropdown_advanced.dart';
+
+class TestItem {
+  final String name;
+  TestItem({
+    required this.name,
+  });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is TestItem && other.name == name;
+  }
+
+  @override
+  int get hashCode => name.hashCode;
+}
 
 class HotReload extends StatelessWidget {
   const HotReload({Key? key}) : super(key: key);
@@ -101,18 +120,21 @@ class HotReload extends StatelessWidget {
           useCases: [
             WidgetbookUseCase(
               name: 'plain',
-              builder: (context) => FlutterSearchBar(
-                onChangeText: (value) {},
-                onFilterTap: context.knobs.boolean(label: "Show filter button")
-                    ? () {}
-                    : null,
-                onOrderArrowTap:
-                    context.knobs.boolean(label: "Show sort button")
-                        ? (order) {}
-                        : null,
-                searchBarColor: context.knobs.color(
-                    label: "Bar color",
-                    initialValue: Theme.of(context).cardColor),
+              builder: (context) => SafeArea(
+                child: FlutterSearchBar(
+                  onChangeText: (value) {},
+                  onFilterTap:
+                      context.knobs.boolean(label: "Show filter button")
+                          ? () {}
+                          : null,
+                  onOrderArrowTap:
+                      context.knobs.boolean(label: "Show sort button")
+                          ? (order) {}
+                          : null,
+                  searchBarColor: context.knobs.color(
+                      label: "Bar color",
+                      initialValue: Theme.of(context).cardColor),
+                ),
               ),
             ),
           ],
@@ -140,9 +162,90 @@ class HotReload extends StatelessWidget {
           useCases: [
             WidgetbookUseCase(
                 name: 'plain',
-                builder: (context) => DropdownSelector(
-                      items: () async => ["Item1", "Item2"],
-                      labelItemBuilder: (item) => item,
+                builder: (context) => SafeArea(
+                      child: DropdownSelector<TestItem>(
+                        // allowMultiselection: true,
+                        items: () async {
+                          return [];
+                        },
+                        labelItemBuilder: (item) => "",
+                        selectedItemLabel: "Clicca",
+                        onSelectItem: (item) {
+                          print(item);
+                        },
+
+                        // sectionItems: () async {
+                        //   return [
+                        //     TestItem(name: "Item1", rows: []),
+                        //     TestItem(name: "Item2")
+                        //   ];
+                        // },
+                        // sectionBuilder: (item) => DropdownSectionTile(
+                        //   label: item.name,
+                        //   isSelected: true,
+                        //   onSelectItem: () {
+                        //     print(item);
+                        //   },
+                        //   itemBuilder: (item) => DropdownRowTile(),
+                        // ),
+                      ),
+                    )),
+            WidgetbookUseCase(
+                name: 'plain',
+                builder: (context) => SafeArea(
+                      child: DropdownAdvanced<TestItem>(
+                        allowMultiselection: true,
+                        filter: (items, text) {
+                          return items
+                              .where(
+                                  (element) => element.item.name.contains(text))
+                              .toList();
+                        },
+                        sections: () async {
+                          var items = [
+                            TestItem(
+                              name: "name",
+                            ),
+                            TestItem(name: "name2"),
+                            TestItem(name: "name23"),
+                            TestItem(name: "name4"),
+                            TestItem(name: "ewe")
+                          ];
+                          return [
+                            DropdownSectionTile(
+                                name: "Test",
+                                rows: List.generate(
+                                    items.length,
+                                    (index) => DropdownRowTile(
+                                        item: items[index],
+                                        onSelectItem: (item) {},
+                                        labelBuilder: (item) => item.name))),
+                            DropdownSectionTile(
+                                name: "Test 2",
+                                rows: List.generate(
+                                    items.length,
+                                    (index) => DropdownRowTile(
+                                        item: items[index],
+                                        onSelectItem: (item) {},
+                                        labelBuilder: (item) => item.name)))
+                          ];
+                        },
+
+                        // sectionItems: () async {
+                        //   return [
+                        //     TestItem(name: "Item1", rows: []),
+                        //     TestItem(name: "Item2")
+                        //   ];
+                        // },
+                        // sectionBuilder: (item) => DropdownSectionTile(
+                        //   label: item.name,
+                        //   isSelected: true,
+                        //   onSelectItem: () {
+                        //     print(item);
+                        //   },
+                        //   itemBuilder: (item) => DropdownRowTile(),
+                        // ),
+                      ),
                     )),
           ],
         ),
