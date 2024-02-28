@@ -1,11 +1,12 @@
-This package provide a single access to a ui kit and style guidelines for Flutter projects. Other than theme and loader management, the package contains also some useful custom standard widgets. 
+This package provide a single access to a ui kit and style guidelines for Flutter projects. Other than theme and loader management, the package contains also some useful custom standard widgets.
 
 ## Features
 
-This package contains: 
+This package contains:
 
-* **Light and Dark theme management and preference saving** 
+* **Light and Dark theme management and preference saving**
 <br>
+
 The package provides a definition for color and styles in case of dark or light theme. It also contains a `ThemeProvider` to manage toggle theme and store preference in `SharedPreferences`. An implementation of this theme management has to be added in the `main.dart` file of the host project to work as expected. For reference, see the _Usage_ paragraph.
 <br>
 <br>
@@ -27,6 +28,7 @@ Check the usage paragraph according to your needs.
 _N.B.: For each case there are different files to import in your project! Look for an help by your IDE._
 
 ### Theme management
+
 This package implements a simple theme management with light and dark theme definitions, along with saving user preference on local memory.
 <br>
 To add theme management in the app, modify the build method in your `main.dart` as follow:
@@ -54,6 +56,7 @@ themeProvider.setTheme(ThemeMode.light);
 This will also save user choice on `SharedPreferences` and restore it on next app launch.
 
 ### Loader
+
 This package contains a simple `LoaderHelper` to show a loader on top of the page as a `Dialog`: it's a centered gif on top of a blurred background. After initializing, the loader can be used everywhere in the app.
 
 Before use, the `LoaderHelper` must be initialised calling
@@ -72,8 +75,9 @@ LoaderHelper.shared.init(
 The `context` passed here should be the deepest app's`BuildContext`.
 
 **NOTES**
-- If this method is not called, than the other methods of this `LoaderHelper` will do nothing (without throwing errors).
-- If this method is called with a `BuildContext` different from the root one, calling the other methods could throw errors in debug.
+
+* If this method is not called, than the other methods of this `LoaderHelper` will do nothing (without throwing errors).
+* If this method is called with a `BuildContext` different from the root one, calling the other methods could throw errors in debug.
 
 To avoid errors, call `init` in the root widget, right after the `MaterialApp` or the `CupertinoApp` (or whatever is the App widget), in the "home" attribtue.
 
@@ -158,6 +162,7 @@ DropdownSelector<int>(
     selectedItems: null,
     selectedItemLabel: "Select",
     onSelectItem: (item) => print(item),
+    itemOverviewIconBuilder; (item) => Icon(Icons.favorite), // optional
     onSelectItemOverview: (item) => print(item),
     items: () async => [0,1,2,3],
     allowMultiselection: false,
@@ -170,7 +175,9 @@ DropdownSelector<int>(
 ```
 
 ### Accordion
+
 Accordion widget with title and a `Widget` to be shown when expanded. The accordion is collapsed by default.
+
 ```dart
 Accordion(
     title: "Tap to expand",
@@ -179,7 +186,9 @@ Accordion(
 ```
 
 ### ExpandableText
+
 Multiline text that can be eventually expanded with a button to show more lines.
+
 ```dart
 ExpandableText(
     textSpan: TextSpan(
@@ -190,8 +199,8 @@ ExpandableText(
 ```
 
 ### Widgets
-To have more info about custom widgets and their behaviour, check the following classes in code: `Loader`, `PageSkeleton`.
 
+To have more info about custom widgets and their behaviour, check the following classes in code: `Loader`, `PageSkeleton`.
 
 ## Additional information
 
