@@ -21,7 +21,7 @@ class DropdownSelector<T> extends StatelessWidget {
 
   /// Uses this icon instead of default one for item overview button.
   /// This is used only if `onSelectItemOverview` is not _null_.
-  final Widget? itemOverviewIcon;
+  final Widget Function(T item)? itemOverviewIconBuilder;
 
   /// If this method is not _null_, a "detail" icon is shown on the right side of
   /// each dropdown item tile, to eventually do something such as opening a modal detail.
@@ -61,7 +61,7 @@ class DropdownSelector<T> extends StatelessWidget {
     this.selectedItems,
     this.selectedItemLabel,
     this.onSelectItem,
-    this.itemOverviewIcon,
+    this.itemOverviewIconBuilder,
     this.onSelectItemOverview,
     required this.items,
     this.allowMultiselection = false,
@@ -182,7 +182,8 @@ class DropdownSelector<T> extends StatelessWidget {
                                                   onSelectItemOverview!(
                                                       res[index]);
                                                 },
-                                                icon: itemOverviewIcon ??
+                                                icon: itemOverviewIconBuilder
+                                                        ?.call(res[index]) ??
                                                     const Icon(
                                                       Icons.more_vert,
                                                       color: ColorsPalette
