@@ -9,10 +9,12 @@ import 'src/themes.dart';
 /// Whenever a change occurs, notify listeners to rebuild widgets with the new state.
 class ThemeProvider extends ChangeNotifier {
   /// The actual theme used in the app. It defaults to `light`.
-  ThemeMode _themeMode = ThemeMode.light;
+  ThemeMode themeMode = ThemeMode.light;
+
+  @Deprecated("Use `themeMode` instead")
 
   /// Returns `true` if the actual theme used in the app is `light`.
-  bool get isLightMode => _themeMode == ThemeMode.light;
+  bool get isLightMode => themeMode == ThemeMode.light;
 
   /// The default light theme
   ThemeData get lightTheme => Themes.lightTheme;
@@ -25,7 +27,7 @@ class ThemeProvider extends ChangeNotifier {
 
   Future<bool> initialize() async {
     if (initialized) return SynchronousFuture(true);
-    _themeMode = await _loadThemePreference();
+    themeMode = await _loadThemePreference();
     initialized = true;
     return true;
   }
@@ -36,7 +38,7 @@ class ThemeProvider extends ChangeNotifier {
   /// `themeMode`: ThemeMode value, usually provided by a toggle. If equals ThemeMode.light, set light theme,
   /// otherwise set dark theme.
   Future setTheme(ThemeMode themeMode) async {
-    _themeMode = themeMode;
+    themeMode = themeMode;
     await _saveThemePreference(isLight: themeMode == ThemeMode.light);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarBrightness:
