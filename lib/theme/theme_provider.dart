@@ -37,7 +37,7 @@ class ThemeProvider extends ChangeNotifier {
   /// `themeMode`: ThemeMode value, usually provided by a toggle. If equals ThemeMode.light, set light theme,
   /// otherwise set dark theme.
   Future setTheme(ThemeMode themeMode) async {
-    themeMode = themeMode;
+    this.themeMode = themeMode;
     await _saveThemePreference(mode: themeMode);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarBrightness:
