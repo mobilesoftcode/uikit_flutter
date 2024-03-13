@@ -49,11 +49,8 @@ class ShadowBoxWithTitle extends StatefulWidget {
   /// Defaults to `false`.
   final bool removeInnerPadding;
 
-  /// The title to show on top of the shadow box.
-  final String title;
-
-  /// If `true` the title is colored with red.
-  final bool isWarning;
+  /// The widget to show on top of the shadow box.
+  final Widget title;
 
   /// If `true` adds an icon button to show/hide [child]
   final bool shouldAllowHiding;
@@ -67,16 +64,15 @@ class ShadowBoxWithTitle extends StatefulWidget {
   ///
   /// It has a default margin that can be removed by setting `removeMargin` to `true`.
   /// It has also a title and eventually an icon button to hide/show content.
-  const ShadowBoxWithTitle(
-      {Key? key,
-      required this.child,
-      this.removeMargin = false,
-      this.removeInnerPadding = false,
-      required this.title,
-      this.isWarning = false,
-      this.shouldAllowHiding = false,
-      this.initiallyShowChild = true})
-      : super(key: key);
+  const ShadowBoxWithTitle({
+    Key? key,
+    required this.child,
+    this.removeMargin = false,
+    this.removeInnerPadding = false,
+    required this.title,
+    this.shouldAllowHiding = false,
+    this.initiallyShowChild = true,
+  }) : super(key: key);
 
   @override
   createState() => _ShadowBoxWithTitleState();
@@ -135,9 +131,7 @@ class _ShadowBoxWithTitleState extends State<ShadowBoxWithTitle>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Semantics(
-            excludeSemantics: true,
-            label: widget.title,
+          MergeSemantics(
             child: Material(
               child: InkWell(
                 onTap: widget.shouldAllowHiding
@@ -155,43 +149,27 @@ class _ShadowBoxWithTitleState extends State<ShadowBoxWithTitle>
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 35,
-                      width: 55,
-                      child: Container(),
+                      width: 35,
                     ),
-                    Flexible(
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        child: Text(
-                          widget.title,
-                          maxLines: 1,
-                          overflow: TextOverflow.fade,
-                          softWrap: false,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleLarge
-                              ?.copyWith(
-                                  color: widget.isWarning
-                                      ? const Color(0xFFF85409)
-                                      : null),
-                        ),
+                    Expanded(
+                      child: widget.title,
+                    ),
+                    ExcludeSemantics(
+                      child: SizedBox(
+                        height: 35,
+                        width: 35,
+                        child: widget.shouldAllowHiding
+                            ? Center(
+                                child: RotationTransition(
+                                  turns: Tween(begin: 0.0, end: 1.0)
+                                      .animate(_rotationController),
+                                  child: const Icon(Icons.keyboard_arrow_down),
+                                ),
+                              )
+                            : Container(),
                       ),
-                    ),
-                    SizedBox(
-                      height: 35,
-                      width: 55,
-                      child: widget.shouldAllowHiding
-                          ? Padding(
-                              padding:
-                                  const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                              child: RotationTransition(
-                                turns: Tween(begin: 0.0, end: 1.0)
-                                    .animate(_rotationController),
-                                child: const Icon(Icons.keyboard_arrow_down),
-                              ),
-                            )
-                          : Container(),
                     ),
                   ],
                 ),
@@ -207,7 +185,9 @@ class _ShadowBoxWithTitleState extends State<ShadowBoxWithTitle>
             child: Material(
               child: Column(
                 children: [
-                  const Divider(),
+                  const Divider(
+                    height: 1,
+                  ),
                   Visibility(
                     visible: !widget.removeInnerPadding,
                     child: const SizedBox(height: 5),

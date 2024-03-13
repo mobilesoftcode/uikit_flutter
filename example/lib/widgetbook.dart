@@ -34,11 +34,12 @@ class HotReload extends StatelessWidget {
             WidgetbookUseCase(
               name: 'with title',
               builder: (context) => ShadowBoxWithTitle(
-                title: context.knobs.string(label: "Text title"),
+                title: Text(
+                  context.knobs.string(label: "Text title"),
+                ),
                 removeMargin: context.knobs.boolean(label: "Remove margin"),
                 removeInnerPadding:
                     context.knobs.boolean(label: "Remove inner padding"),
-                isWarning: context.knobs.boolean(label: "Is warning"),
                 shouldAllowHiding:
                     context.knobs.boolean(label: "Should allow hiding"),
                 initiallyShowChild:
