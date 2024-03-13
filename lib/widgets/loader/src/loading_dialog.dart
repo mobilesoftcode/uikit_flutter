@@ -18,8 +18,8 @@ class LoadingDialog {
   BuildContext? _context;
 
   /// The custom loading widget
-  late Widget loading = WillPopScope(
-    onWillPop: () async => false,
+  late Widget loading = PopScope(
+    canPop: false,
     child: Dialog(
         backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,

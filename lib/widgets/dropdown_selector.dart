@@ -19,6 +19,10 @@ class DropdownSelector<T> extends StatelessWidget {
   /// is only in view-mode and items cannot be selected.
   final void Function(T item)? onSelectItem;
 
+  /// Uses this icon instead of default one for item overview button.
+  /// This is used only if `onSelectItemOverview` is not _null_.
+  final Widget Function(T item)? itemOverviewIconBuilder;
+
   /// If this method is not _null_, a "detail" icon is shown on the right side of
   /// each dropdown item tile, to eventually do something such as opening a modal detail.
   final void Function(T item)? onSelectItemOverview;
@@ -57,6 +61,7 @@ class DropdownSelector<T> extends StatelessWidget {
     this.selectedItems,
     this.selectedItemLabel,
     this.onSelectItem,
+    this.itemOverviewIconBuilder,
     this.onSelectItemOverview,
     required this.items,
     this.allowMultiselection = false,
@@ -128,6 +133,7 @@ class DropdownSelector<T> extends StatelessWidget {
                                       var selected =
                                           _selectedItems.contains(res[index]);
                                       return ListTile(
+                                        minLeadingWidth: 10,
                                         onTap: onSelectItem != null
                                             ? () {
                                                 T item = res[index];
@@ -167,18 +173,22 @@ class DropdownSelector<T> extends StatelessWidget {
                                                     : ColorsPalette.primaryGrey,
                                                 size: 15,
                                               )
-                                            : null,
+                                            : const SizedBox(
+                                                width: 10,
+                                              ),
                                         trailing: onSelectItemOverview != null
                                             ? IconButton(
                                                 onPressed: () {
                                                   onSelectItemOverview!(
                                                       res[index]);
                                                 },
-                                                icon: const Icon(
-                                                  Icons.more_vert,
-                                                  color:
-                                                      ColorsPalette.primaryGrey,
-                                                ),
+                                                icon: itemOverviewIconBuilder
+                                                        ?.call(res[index]) ??
+                                                    const Icon(
+                                                      Icons.more_vert,
+                                                      color: ColorsPalette
+                                                          .primaryGrey,
+                                                    ),
                                               )
                                             : null,
                                       );
