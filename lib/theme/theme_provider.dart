@@ -9,10 +9,11 @@ import 'src/themes.dart';
 /// Whenever a change occurs, notify listeners to rebuild widgets with the new state.
 class ThemeProvider extends ChangeNotifier {
   /// The actual theme used in the app. It defaults to `light`.
-  ThemeMode _themeMode = ThemeMode.light;
+  ThemeMode themeMode = ThemeMode.light;
 
   /// Returns `true` if the actual theme used in the app is `light`.
-  bool get isLightMode => _themeMode == ThemeMode.light;
+  @Deprecated("Use `themeMode` instead")
+  bool get isLightMode => themeMode == ThemeMode.light;
 
   /// The default light theme
   ThemeData get lightTheme => Themes.lightTheme;
@@ -25,7 +26,7 @@ class ThemeProvider extends ChangeNotifier {
 
   Future<bool> initialize() async {
     if (initialized) return SynchronousFuture(true);
-    _themeMode = await _loadThemePreference();
+    themeMode = await _loadThemePreference();
     initialized = true;
     return true;
   }
@@ -36,8 +37,8 @@ class ThemeProvider extends ChangeNotifier {
   /// `themeMode`: ThemeMode value, usually provided by a toggle. If equals ThemeMode.light, set light theme,
   /// otherwise set dark theme.
   Future setTheme(ThemeMode themeMode) async {
-    _themeMode = themeMode;
-    await _saveThemePreference(isLight: themeMode == ThemeMode.light);
+    this.themeMode = themeMode;
+    await _saveThemePreference(mode: themeMode);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         statusBarBrightness:
             themeMode == ThemeMode.light ? Brightness.light : Brightness.dark));
@@ -48,17 +49,21 @@ class ThemeProvider extends ChangeNotifier {
   /// Defaults to ThemeMode.light.
   Future<ThemeMode> _loadThemePreference() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (prefs.getBool("isLight") ?? true) {
-      return ThemeMode.light;
-    } else {
-      return ThemeMode.dark;
+    final mode = prefs.getString("mode");
+    if (mode == null) {
+      return ThemeMode.system;
     }
+
+    return ThemeMode.values
+            .where((element) => element.name == mode)
+            .firstOrNull ??
+        ThemeMode.system;
   }
 
   /// Save Theme preference (light/dark) in SharedPreferences
-  Future _saveThemePreference({required bool isLight}) async {
+  Future _saveThemePreference({required ThemeMode mode}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    prefs.setBool("isLight", isLight);
+    prefs.setString("mode", mode.name);
   }
 }
