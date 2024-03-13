@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:uikit_flutter/src/utils/colors.dart';
 
 /// A simple loader showing a ring gif animation centerd in the screen.
 class Loader extends StatelessWidget {
@@ -8,10 +7,12 @@ class Loader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-        child: Image.asset('assets/loader.gif',
-            package: "uikit_flutter",
-            height: 70,
-            width: 70,
-            color: ColorsPalette.primaryBlue));
+        child: Image.asset(
+      'assets/loader.gif',
+      package: "uikit_flutter",
+      height: 70,
+      width: 70,
+      color: Theme.of(context).primaryColor,
+    ));
   }
 }
