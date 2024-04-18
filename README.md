@@ -20,6 +20,7 @@ Furthermore, the following widgets are also provided:
 * **Accordion**
 * **ExpandableText**
 * **PageSkeleton**
+* **TimePicker**
 
 ## Usage
 
@@ -202,6 +203,27 @@ ExpandableText(
 
 To have more info about custom widgets and their behaviour, check the following classes in code: `Loader`, `PageSkeleton`.
 
+
+### TimePicker
+
+Basic Time Picker with scroll hours, scroll minutes and close button
+
+```dart
+  TimePicker( 
+    roundBorder : true,                 // Bordo arrotondato         - OPZIONALE, dflt = false
+    colorBackground: Colors.grey,       // Colore sfondo             - OPZIONALE, dflt = Colors.transparent
+    colorSelected : Colors.blue,        // Colore digit selezionato  - OPZIONALE, dflt = Colors.black
+    colorBtnClose : Colors.blue,        // Colore bottone chiudi     - OPZIONALE, dflt = Colors.black
+    initialTime: DateTime(1970, 1, 1, 12, 30), // Data iniziale      - OPZIONALE, dflt = ora sistema
+    onTimeSelected: (Datetime : time){
+        // Callback che restituisce l'ora selezionata 
+    },
+    onClose: (){
+       // Callback tap bottone chiudi
+    },
+),
+
+```:
 ## Additional information
 
 This package is mantained by the Competence Center Flutter of Mobilesoft Srl.
