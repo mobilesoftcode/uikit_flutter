@@ -229,8 +229,8 @@ class _ListWhellScrollViewDigitsState extends State<_ListWhellScrollViewDigits> 
       child: ListWheelScrollView(
         controller: controller,
         offAxisFraction: 0, //inclinazione dx
-        diameterRatio: 2,
-        itemExtent: 25, // dim item
+        diameterRatio: 1.1,
+        itemExtent: 30, // dim item
         physics: const FixedExtentScrollPhysics(),
         onSelectedItemChanged:(index) {
           _handleSelectedItemChanged(index);
