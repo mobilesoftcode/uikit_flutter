@@ -211,6 +211,8 @@ Basic Time Picker with scroll hours, scroll minutes and close button
 ```dart
   TimePicker( 
     roundBorder : true,                 // Bordo arrotondato         - OPZIONALE, dflt = false
+    maxWidth: 250,                      // Widget maxWidth           - OPZIONALE, dflt = 250
+    maxHeight: 200,                     // Widget maxHeight          - OPZIONALE, dflt = 200
     colorBackground: Colors.grey,       // Colore sfondo             - OPZIONALE, dflt = Colors.transparent
     colorSelected : Colors.blue,        // Colore digit selezionato  - OPZIONALE, dflt = Colors.black
     colorBtnClose : Colors.blue,        // Colore bottone chiudi     - OPZIONALE, dflt = Colors.black

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 class TimePicker extends StatefulWidget {
   final bool roundBorder;
+  final double maxWidth;
+  final double maxHeight;
   final Color colorBackground;
   final Color colorSelected;
   final Color colorBtnClose;
@@ -12,6 +14,8 @@ class TimePicker extends StatefulWidget {
   const TimePicker({
     super.key,  
     this.roundBorder = false,
+    this.maxWidth = 250,
+    this.maxHeight = 200,
     this.colorBackground = Colors.transparent,
     this.colorSelected = Colors.black,
     this.colorBtnClose = Colors.black, 
@@ -41,8 +45,6 @@ class TimePickerState extends State<TimePicker> {
 
   @override
   Widget build(BuildContext context) {
-    final Size screenSize = MediaQuery.of(context).size;
-
     Color colorBackground = widget.colorBackground == Colors.transparent
     ? widget.colorBackground
     : widget.colorBackground.withOpacity(0.2); // Sfondo semitrasparente
@@ -58,8 +60,8 @@ class TimePickerState extends State<TimePicker> {
         ),
       child: ConstrainedBox( 
         constraints: BoxConstraints(
-          maxHeight: screenSize.height / 5, // Altezza massima è 1/5 dell'altezza dello schermo
-          maxWidth: screenSize.width / 3,   // Larghezza massima è 1/3 della larghezza dello schermo
+          maxWidth: widget.maxWidth,  
+          maxHeight: widget.maxHeight,  
         ),
          
         child: Padding(
