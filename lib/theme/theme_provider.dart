@@ -51,13 +51,13 @@ class ThemeProvider extends ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final mode = prefs.getString("mode");
     if (mode == null) {
-      return ThemeMode.system;
+      return ThemeMode.light;
     }
 
     return ThemeMode.values
             .where((element) => element.name == mode)
             .firstOrNull ??
-        ThemeMode.system;
+        ThemeMode.light;
   }
 
   /// Save Theme preference (light/dark) in SharedPreferences
