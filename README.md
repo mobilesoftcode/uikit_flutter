@@ -209,23 +209,31 @@ To have more info about custom widgets and their behaviour, check the following 
 Basic Time Picker with scroll hours, scroll minutes and close button
 
 ```dart
-  TimePicker( 
-    roundBorder : true,                 // Bordo arrotondato         - OPZIONALE, dflt = false
-    maxWidth: 250,                      // Widget maxWidth           - OPZIONALE, dflt = 250
-    maxHeight: 200,                     // Widget maxHeight          - OPZIONALE, dflt = 200
-    colorBackground: Colors.grey,       // Colore sfondo             - OPZIONALE, dflt = Colors.transparent
-    colorSelected : Colors.blue,        // Colore digit selezionato  - OPZIONALE, dflt = Colors.black
-    colorBtnClose : Colors.blue,        // Colore bottone chiudi     - OPZIONALE, dflt = Colors.black
-    initialTime: DateTime(1970, 1, 1, 12, 30), // Data iniziale      - OPZIONALE, dflt = ora sistema
-    onTimeSelected: (Datetime : time){
-        // Callback che restituisce l'ora selezionata 
+  TimePicker(
+    hoursSemanticLabel: "Selettore ore"      // Label semantica del selettore ore - RICHIESTO
+    minutesSemanticLabel: "Selettore minuti" // Label semantica del selettore minuti - RICHIESTO
+        onTimeSelected: (Datetime : time){
+        // Callback che restituisce l'ora selezionata - RICHIESTO 
     },
-    onClose: (){
-       // Callback tap bottone chiudi
-    },
+    roundBorder : true,            // Bordo arrotondato         - OPZIONALE, dflt = false
+    maxWidth: 180,                 // Widget maxWidth           - OPZIONALE, dflt = 180
+    maxHeight: 200,                // Widget maxHeight          - OPZIONALE, dflt = 200
+    colorBackground: Colors.grey,  // Colore sfondo             - OPZIONALE, dflt = Colors.transparent
+    style = TextStyle(...)         // Stile cifre non selezionate  - OPZIONALE, dflt = TextStyle(color: black, fontsize: 12, fontWeight: FontWeight.normal)
+    selectedStyle = TextStyle(...) // Stile cifre selezionate   - OPZIONALE, dflt = TextStyle(color: black, fontsize: 16, fontWeight: FontWeight.bold)
+    initialTime: DateTime(...),    // Data iniziale             - OPZIONALE, dflt = ora sistema
+    hoursOffAxisFraction: -1.0,    // Inclinazione wheel ore ai bordi - OPZIONALE, dflt = -1.0
+    minutesOffAxisFraction: 1.0    // Inclinazione wheel minuti ai bordi - OPZIONALE, dflt = 1.0
+    diameterRatio: 1.1             // Ratio tra altezza del widget e diametro ruote - OPZIONALE, dflt = 1.1,
+    itemExtent = 25.0              // Spazio occupato dal singolo elemento della ruota - OPZIONALE, dflt = 25.0
+    selectedAtStart: false         // Se true invoca onTimeSelected all'inizializzazione - OPZIONALE, dflt = false
+    debouncingWindow: Duration(...) // Finestra  temporale durante la quale onTimeSelected non viene richiamato
+                                    // mentre la rotella sta venendo manipolata - OPZIONALE, dflt = 300 ms
+    separatorPadding: 0.0          // Padding attorno al simbolo di separazione - OPZIONALE, dflt = 0.0
 ),
 
 ```:
+
 ## Additional information
 
 This package is mantained by the Competence Center Flutter of Mobilesoft Srl.
