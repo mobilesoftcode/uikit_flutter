@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 class TimePicker extends StatefulWidget {
@@ -5,23 +7,41 @@ class TimePicker extends StatefulWidget {
   final double maxWidth;
   final double maxHeight;
   final Color colorBackground;
-  final Color colorSelected;
-  final Color colorBtnClose;
-  final DateTime? initialTime; 
+  final TextStyle style;
+  final TextStyle selectedStyle;
+  final String hoursSemanticLabel;
+  final String minutesSemanticLabel;
+  final DateTime? initialTime;
   final Function(DateTime) onTimeSelected;
-  final Function() onClose;
+  final bool selectAtStart;
+  final Duration? debouncingWindow;
+  final double minutesOffAxisFraction;
+  final double hoursOffAxisFraction;
+  final double diameterRatio;
+  final double itemExtent;
+  final double separatorPadding;
 
   const TimePicker({
-    super.key,  
+    super.key,
     this.roundBorder = false,
-    this.maxWidth = 250,
+    this.maxWidth = 180,
     this.maxHeight = 200,
     this.colorBackground = Colors.transparent,
-    this.colorSelected = Colors.black,
-    this.colorBtnClose = Colors.black, 
+    this.style = const TextStyle(
+        color: Colors.black, fontSize: 12, fontWeight: FontWeight.normal),
+    this.selectedStyle = const TextStyle(
+        color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold),
+    required this.hoursSemanticLabel,
+    required this.minutesSemanticLabel,
+    this.minutesOffAxisFraction = 1.0,
+    this.hoursOffAxisFraction = -1.0,
+    this.diameterRatio = 1.1,
+    this.itemExtent = 25.0,
     this.initialTime,
     required this.onTimeSelected,
-    required this.onClose,
+    this.selectAtStart = false,
+    this.debouncingWindow = const Duration(milliseconds: 300),
+    this.separatorPadding = 0.0,
   });
 
   @override
@@ -33,147 +53,160 @@ class TimePickerState extends State<TimePicker> {
   int minutes = 60;
   late int hourSelected;
   late int minuteSelected;
-  late DateTime initialTine; 
+  late DateTime initialTime;
+  late final _Debouncer? _debouncer;
 
   @override
-  void initState() {   
+  void initState() {
     super.initState();
-    hourSelected = 0;
-    minuteSelected = 0;
-    initialTine = widget.initialTime ?? DateTime.now();
+    initialTime = widget.initialTime ?? DateTime.now();
+    hourSelected = initialTime.hour;
+    minuteSelected = initialTime.minute;
+    if (widget.selectAtStart) {
+      widget.onTimeSelected(initialTime);
+    }
+    Duration? debouncingWindow = widget.debouncingWindow;
+
+    _debouncer = debouncingWindow == null
+        ? null
+        : _Debouncer(duration: debouncingWindow);
   }
 
   @override
   Widget build(BuildContext context) {
     Color colorBackground = widget.colorBackground == Colors.transparent
-    ? widget.colorBackground
-    : widget.colorBackground.withOpacity(0.2); // Sfondo semitrasparente
+        ? widget.colorBackground
+        : widget.colorBackground.withOpacity(0.2); // Sfondo semitrasparente
 
     return Container(
       decoration: widget.roundBorder
-        ? BoxDecoration(
-            borderRadius: BorderRadius.circular(10), // Imposta il raggio di curvatura dei bordi
-            color: colorBackground,  
-          )
-        : BoxDecoration( 
-          color: colorBackground, 
-        ),
-      child: ConstrainedBox( 
+          ? BoxDecoration(
+              borderRadius: BorderRadius.circular(
+                  10), // Imposta il raggio di curvatura dei bordi
+              color: colorBackground,
+            )
+          : BoxDecoration(
+              color: colorBackground,
+            ),
+      child: ConstrainedBox(
         constraints: BoxConstraints(
-          maxWidth: widget.maxWidth,  
-          maxHeight: widget.maxHeight,  
+          maxWidth: widget.maxWidth,
+          maxHeight: widget.maxHeight,
         ),
-         
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
-            children:[
-              _ListWhellScrollViewDigits( // scrollview ore
-                colorSelected: widget.colorSelected,  
-                itemCount: hours, 
-                initialValue: initialTine.hour,
-                onDigitSelected: (value){
-                  setState(() {
-                    hourSelected = value; 
-                    widget.onTimeSelected(
-                      //Restituisce ora selezionata   
-                      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, hourSelected, minuteSelected)
-                    );
-                  });             
-                }
-              ),
-            
-              const _ListWheelSeparator(),  // separatore
-                              
-              _ListWhellScrollViewDigits(   // scrollview minuti
-                colorSelected: widget.colorSelected,  
-                itemCount: minutes, 
-                initialValue: initialTine.minute,
-                onDigitSelected: (value){
-                  setState(() {
-                    minuteSelected = value; 
-                    widget.onTimeSelected(
-                       //Restituisce ora selezionata   
-                      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, hourSelected, minuteSelected)
-                    );
-                  });                     
-                }        
-              ),
-              
-              _ShowClose(
-                colorBtnClose: widget.colorBtnClose,
-                onClose: (){
-                  widget.onClose();
-                },
-              ),
+            children: [
+              _ListWheelScrollViewDigits(
+                  // scrollview ore
+                  style: widget.style,
+                  selectedStyle: widget.selectedStyle,
+                  itemCount: hours,
+                  initialValue: initialTime.hour,
+                  semanticLabel: widget.hoursSemanticLabel,
+                  semanticValueBuilder: (hours) {
+                    return "${hours.toString().padLeft(2, '0')}:${minuteSelected.toString().padLeft(2, '0')}";
+                  },
+                  offAxisFraction: widget.hoursOffAxisFraction,
+                  diameterRatio: widget.diameterRatio,
+                  itemExtent: widget.itemExtent,
+                  onDigitSelected: (value) {
+                    setState(() {
+                      hourSelected = value;
+                      _debounceAction(() => widget.onTimeSelected(
+                          //Restituisce ora selezionata
+                          DateTime(
+                              DateTime.now().year,
+                              DateTime.now().month,
+                              DateTime.now().day,
+                              hourSelected,
+                              minuteSelected)));
+                    });
+                  }),
+
+              ExcludeSemantics(
+                child: _ListWheelSeparator(
+                    padding: widget.separatorPadding,
+                    style: widget.selectedStyle),
+              ), // separatore
+
+              _ListWheelScrollViewDigits(
+                  // scrollview minuti
+                  style: widget.style,
+                  selectedStyle: widget.selectedStyle,
+                  itemCount: minutes,
+                  initialValue: initialTime.minute,
+                  semanticLabel: widget.minutesSemanticLabel,
+                  semanticValueBuilder: (minutes) {
+                    return "${hourSelected.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}";
+                  },
+                  offAxisFraction: widget.minutesOffAxisFraction,
+                  diameterRatio: widget.diameterRatio,
+                  itemExtent: widget.itemExtent,
+                  onDigitSelected: (value) {
+                    setState(() {
+                      minuteSelected = value;
+                      widget.onTimeSelected(
+                          //Restituisce ora selezionata
+                          DateTime(
+                              DateTime.now().year,
+                              DateTime.now().month,
+                              DateTime.now().day,
+                              hourSelected,
+                              minuteSelected));
+                    });
+                  }),
             ],
           ),
         ),
       ),
     );
-  } 
-}
+  }
 
-//  COMPONENTE CON BOTTONE CHIUDI 
-class _ShowClose extends StatelessWidget {
-  const _ShowClose({
-    required this.colorBtnClose,
-    required this.onClose,
-  });
-
-  final Color colorBtnClose;
-  final void Function() onClose;
-
-  @override
-  Widget build(BuildContext context) {
-    final buttonStyle = TextStyle(
-      color: colorBtnClose, 
-      fontSize: 12, 
-      fontWeight: FontWeight.bold
-    );
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        const Spacer(), 
-        TextButton(
-          onPressed: () {
-            onClose();  
-          },
-          child: Text(
-            style : buttonStyle,
-            'Chiudi'
-            ),
-        ),
-      ],
-    );
+  void _debounceAction(VoidCallback action) {
+    if (_debouncer != null) {
+      _debouncer!.run(action);
+    } else {
+      action.call();
+    }
   }
 }
 
-// COMPONENTE SEPARATORE 
+class _Debouncer {
+  final Duration duration;
+  Timer? _timer;
+
+  _Debouncer({required this.duration});
+
+  void run(VoidCallback action) {
+    if (_timer != null) {
+      _timer!.cancel();
+    }
+    _timer = Timer(duration, action);
+  }
+}
+
+// COMPONENTE SEPARATORE
 class _ListWheelSeparator extends StatelessWidget {
-  const _ListWheelSeparator({
-    super.key,
-  });
+  const _ListWheelSeparator({required this.padding, required this.style});
+
+  final double padding;
+  final TextStyle style;
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(width: 20),
-          Text (
+          SizedBox(width: padding),
+          Text(
             ":",
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.black,
-              fontWeight: FontWeight.bold
-            ),
+            style: style,
           ),
-          SizedBox(width: 20),
+          SizedBox(width: padding),
         ],
       ),
     );
@@ -181,37 +214,52 @@ class _ListWheelSeparator extends StatelessWidget {
 }
 
 // COMPONENTE SCROLLVIEW
-class _ListWhellScrollViewDigits extends StatefulWidget {
+class _ListWheelScrollViewDigits extends StatefulWidget {
   final int initialValue;
-  final Color colorSelected;
+  final TextStyle style;
+  final TextStyle selectedStyle;
   final int itemCount;
   final ValueChanged<int> onDigitSelected;
+  final String semanticLabel;
+  final String Function(int) semanticValueBuilder;
+  final double offAxisFraction;
+  final double diameterRatio;
+  final double itemExtent;
 
-  const _ListWhellScrollViewDigits({
+  const _ListWheelScrollViewDigits({
     this.initialValue = 0,
-    required this.colorSelected,
+    required this.style,
+    required this.selectedStyle,
     required this.itemCount,
-    required this.onDigitSelected
+    required this.onDigitSelected,
+    required this.semanticLabel,
+    required this.semanticValueBuilder,
+    required this.offAxisFraction,
+    required this.diameterRatio,
+    required this.itemExtent,
   });
 
   @override
-  State<_ListWhellScrollViewDigits> createState() => _ListWhellScrollViewDigitsState();
+  State<_ListWheelScrollViewDigits> createState() =>
+      _ListWheelScrollViewDigitsState();
 }
 
-class _ListWhellScrollViewDigitsState extends State<_ListWhellScrollViewDigits> {
+class _ListWheelScrollViewDigitsState
+    extends State<_ListWheelScrollViewDigits> {
   late int digitSelected;
-  late FixedExtentScrollController controller ;
-  
+  late FixedExtentScrollController controller;
+
   @override
   void initState() {
     super.initState();
     digitSelected = widget.initialValue;
-    controller = FixedExtentScrollController(initialItem: widget.initialValue);  // Valore iniziale selezionato
+    controller = FixedExtentScrollController(
+        initialItem: widget.initialValue); // Valore iniziale selezionato
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _handleSelectedItemChanged(widget.initialValue); // Chiama manualmente il gestore onSelectedItemChanged
+      digitSelected = widget.initialValue;
     });
   }
-  
+
   @override
   void dispose() {
     super.dispose();
@@ -219,56 +267,85 @@ class _ListWhellScrollViewDigitsState extends State<_ListWhellScrollViewDigits> 
   }
 
   void _handleSelectedItemChanged(int index) {
-     widget.onDigitSelected(index);
-     digitSelected = index;
+    widget.onDigitSelected(index);
+    digitSelected = index;
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Flexible(
-      child: ListWheelScrollView(
-        controller: controller,
-        offAxisFraction: 0, //inclinazione dx
-        diameterRatio: 1.1,
-        itemExtent: 30, // dim item
-        physics: const FixedExtentScrollPhysics(),
-        onSelectedItemChanged:(index) {
-          _handleSelectedItemChanged(index);
-        },
-        children: _listWheelChildren(widget.colorSelected, widget.itemCount, digitSelected)
+      child: Semantics(
+        label: widget.semanticLabel,
+        excludeSemantics: true,
+        onIncrease: () => controller.jumpToItem(digitSelected + 1),
+        value: widget.semanticValueBuilder(digitSelected),
+        increasedValue: () {
+          var newValue = digitSelected + 1;
+          if (newValue == widget.itemCount) {
+            newValue = 0;
+          }
+          return widget.semanticValueBuilder(newValue);
+        }(),
+        decreasedValue: () {
+          var newValue = digitSelected - 1;
+          if (newValue == 0) {
+            newValue = widget.itemCount;
+          }
+          return widget.semanticValueBuilder(newValue);
+        }(),
+        onDecrease: () => controller.jumpToItem(digitSelected - 1),
+        child: ListWheelScrollView.useDelegate(
+          controller: controller,
+          offAxisFraction: widget.offAxisFraction,
+          //inclinazione dx
+          diameterRatio: widget.diameterRatio,
+          itemExtent:
+              widget.itemExtent * MediaQuery.textScalerOf(context).scale(1),
+          // dim item
+          physics: const FixedExtentScrollPhysics(),
+          onSelectedItemChanged: (index) {
+            _handleSelectedItemChanged(index);
+          },
+          childDelegate: ListWheelChildLoopingListDelegate(
+              children: _listWheelChildren(widget.style, widget.selectedStyle,
+                  widget.itemCount, digitSelected)),
+        ),
       ),
     );
   }
 
 // LISTA ELEMENTI SCROLLVIEW
-List <Widget> _listWheelChildren(Color colorSelected, int numChild, int digitSelected) {
+  List<Widget> _listWheelChildren(TextStyle style, TextStyle selectedStyle,
+      int numChild, int digitSelected) {
     return List.generate(numChild, (index) {
-      return  _HoursDigit(colorSelected : colorSelected,index: index, digitSelected: digitSelected);        
+      return _HoursDigit(
+          style: style,
+          selectedStyle: selectedStyle,
+          index: index,
+          digitSelected: digitSelected);
     });
   }
 }
 
 // ELEMENTO SCROLLVIEW
 class _HoursDigit extends StatelessWidget {
-  const _HoursDigit({
-    required this.colorSelected,
-    required this.index,
-    required this.digitSelected
-  });
+  const _HoursDigit(
+      {required this.style,
+      required this.selectedStyle,
+      required this.index,
+      required this.digitSelected});
 
-  final Color colorSelected;
+  final TextStyle style;
+  final TextStyle selectedStyle;
   final int index;
   final int digitSelected;
 
   @override
   Widget build(BuildContext context) {
     final isSelected = index == digitSelected;
-  
-    final textStyle = TextStyle(
-      color: isSelected ? colorSelected: Colors.black, 
-      fontSize: isSelected ? 16 : 12,
-      fontWeight: isSelected ?FontWeight.bold : FontWeight.normal
-    );
+
+    final textStyle = isSelected ? selectedStyle : style;
 
     return Container(
       decoration: BoxDecoration(
