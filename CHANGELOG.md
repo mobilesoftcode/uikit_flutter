@@ -1,3 +1,10 @@
+## 0.0.4
+
+* Added `ExpandableFloatingContainer` widget
+* Added `TimePicker` widget
+* Fix default `themeMode` from `ThemeProvider`
+* Updated dependencies
+
 ## 0.0.3
 
 * **BREAKING** Changed title's type of `ShadowBoxWithTitle` from _String_ to _Widget_
