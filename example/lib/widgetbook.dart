@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:uikit_flutter/theme/src/themes.dart';
 import 'package:uikit_flutter/widgets/accordion.dart';
 import 'package:uikit_flutter/widgets/dropdown_selector.dart';
+import 'package:uikit_flutter/widgets/expandable_floating_container.dart';
 import 'package:uikit_flutter/widgets/expandable_text.dart';
 import 'package:uikit_flutter/widgets/flutter_search_bar.dart';
 import 'package:uikit_flutter/widgets/loader/loader.dart';
@@ -158,6 +159,35 @@ class HotReload extends StatelessWidget {
                     color: Colors.white,
                     child: Text(context.knobs.string(label: "Text content"))),
               ),
+            ),
+          ],
+        ),
+        WidgetbookComponent(
+          name: 'Expandable Floating Container',
+          useCases: [
+            WidgetbookUseCase(
+              name: 'plain',
+              builder: (context) => SafeArea(child: Stack(
+                children: [
+                  Positioned(
+                    top: 16,
+                    right: 16,
+                    child: ExpandableFloatingContainer(
+                    icon: (isExpanded) => Icon(context.knobs.list(label: "Icon", options: [Icons.gps_off, Icons.tv_off])),
+                    title: Text(context.knobs.string(label: "Title", initialValue: "Example Title")),
+                    backgroundColor: context.knobs.color(label: "Background Color", initialValue: Colors.white),
+                    
+                    child: Flexible(
+                      child: SizedBox(
+                        height: 200,
+                        child: Container(
+                            color: Colors.red,
+                            ),
+                      ),
+                    ),
+                                    ),
+                  ),
+          ])),
             ),
           ],
         ),
