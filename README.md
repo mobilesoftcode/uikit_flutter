@@ -20,6 +20,7 @@ Furthermore, the following widgets are also provided:
 * **Accordion**
 * **ExpandableText**
 * **PageSkeleton**
+* **ExpandableFloatingContainer**
 * **TimePicker**
 
 ## Usage
@@ -196,6 +197,26 @@ ExpandableText(
         text:
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."),
     maxLines: 1,
+);
+```
+
+### ExpandableFloatingContainer
+
+![ExpandableFloatingContainer](assets/readme/floating_container.gif)
+
+Easy to use customizable floating container
+
+```dart
+ExpandableFloatingContainer(
+                    icon: (isExpanded) => Icon(isExpanded ? Icons.tv_off : Icons.tv),
+                    title: Text("Example Title"),
+                    backgroundColor: Colors.white,
+                    child: SizedBox(
+                        height: 300,
+                        child: Container(
+                            color: Colors.red
+                        )   
+                    )
 );
 ```
 
